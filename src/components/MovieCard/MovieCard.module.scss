@@ -1,0 +1,135 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.card {
+  background-color: v.$color-bg-elevated;
+  border-radius: v.$radius-xl;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform v.$transition-fast,
+    box-shadow v.$transition-fast;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: v.$shadow-card-hover;
+  }
+}
+
+.posterWrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 150%;
+  background-color: v.$color-bg-muted;
+}
+
+.poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.noPoster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  @include m.flex-center;
+
+  color: v.$color-text-muted;
+  font-size: v.$font-size-base;
+  text-align: center;
+  padding: v.$space-4;
+}
+
+.mediaTypeBadge {
+  position: absolute;
+  top: v.$space-3;
+  left: v.$space-3;
+  background-color: v.$overlay-strong;
+  color: v.$color-text-primary;
+  padding: v.$space-1 v.$space-3;
+  font-size: v.$font-size-xs;
+  font-weight: v.$font-weight-semibold;
+  border-radius: v.$radius-sm;
+  backdrop-filter: blur(4px);
+}
+
+.favoriteBtn {
+  @include m.button-reset;
+  @include m.flex-center;
+
+  position: absolute;
+  top: v.$space-3;
+  right: v.$space-3;
+  background: v.$overlay-medium;
+  border-radius: v.$radius-full;
+  width: 36px;
+  height: 36px;
+  transition:
+    background v.$transition-fast,
+    transform v.$transition-fast;
+  backdrop-filter: blur(4px);
+  font-size: v.$font-size-lg;
+
+  &:hover {
+    background: v.$overlay-heavy;
+    transform: scale(1.1);
+  }
+
+  &.active {
+    background: v.$overlay-light;
+  }
+}
+
+.info {
+  padding: v.$space-5;
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-2;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: v.$space-3;
+}
+
+.title {
+  font-size: v.$font-size-md;
+  font-weight: v.$font-weight-semibold;
+  color: v.$color-text-primary;
+  margin: 0;
+  @include m.line-clamp(1);
+}
+
+.rating {
+  font-size: v.$font-size-base-sm;
+  font-weight: v.$font-weight-semibold;
+  color: v.$color-accent;
+  white-space: nowrap;
+}
+
+.detailsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: v.$font-size-sm;
+  color: v.$color-text-secondary;
+}
+
+.runtime {
+  background-color: v.$color-bg-muted;
+  padding: 2px v.$space-2;
+  border-radius: v.$radius-sm;
+}

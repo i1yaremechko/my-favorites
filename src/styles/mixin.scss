@@ -1,0 +1,102 @@
+@use 'variables' as v;
+
+@mixin respond-up($breakpoint) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin respond-down($breakpoint) {
+  @media (max-width: ($breakpoint - 1)) {
+    @content;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin page-container {
+  max-width: v.$container-max-width;
+  margin: 0 auto;
+  padding: 0 v.$space-7;
+}
+
+@mixin button-reset {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin line-clamp($lines: 1) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: $lines;
+  line-clamp: $lines;
+  -webkit-box-orient: vertical;
+}
+
+@mixin active-pill {
+  background-color: v.$color-accent;
+  border-color: v.$color-accent;
+  color: v.$color-text-on-accent;
+  font-weight: v.$font-weight-semibold;
+}
+
+@mixin surface-control {
+  background-color: v.$color-bg-elevated;
+  border: 1px solid v.$color-border-strong;
+  border-radius: v.$radius-lg;
+  color: v.$color-text-primary;
+  transition: border-color v.$transition-fast;
+
+  &:focus {
+    border-color: v.$color-accent;
+    outline: none;
+  }
+}
+
+@mixin hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@mixin snap-scroll-x {
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  @include hide-scrollbar;
+}
+
+@mixin snap-item-full {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+@mixin snap-item-auto {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}

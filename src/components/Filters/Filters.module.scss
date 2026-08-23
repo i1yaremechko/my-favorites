@@ -1,0 +1,113 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.filtersContainer {
+  background-color: v.$color-bg-secondary;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-xl;
+  padding: v.$space-7;
+  margin-bottom: v.$space-9;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-5;
+
+  @include m.respond-up(v.$breakpoint-md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.mediaTypeSwitch {
+  display: flex;
+  background-color: v.$color-bg-elevated;
+  border-radius: v.$radius-lg;
+  padding: v.$space-1;
+  border: 1px solid v.$color-border-strong;
+}
+
+.switchBtn {
+  @include m.button-reset;
+
+  flex: 1;
+  color: v.$color-text-secondary;
+  padding: v.$space-3 v.$space-7;
+  font-size: v.$font-size-base;
+  font-weight: v.$font-weight-medium;
+  border-radius: v.$radius-md;
+  transition: all v.$transition-fast;
+
+  &:hover {
+    color: v.$color-text-primary;
+  }
+
+  &.active {
+    @include m.active-pill;
+  }
+}
+
+.select {
+  @include m.surface-control;
+
+  padding: v.$space-4 v.$space-6;
+  font-size: v.$font-size-base;
+  cursor: pointer;
+  flex: 1;
+
+  option {
+    background-color: v.$color-bg-elevated;
+    color: v.$color-text-primary;
+  }
+}
+
+// Показуємо нативні <select> лише від md і вище — на мобільних їх замінює
+// горизонтальна прокрутка чіпів (.mobileFilterGroup нижче)
+.desktopOnly {
+  display: none;
+
+  @include m.respond-up(v.$breakpoint-md) {
+    display: block;
+  }
+}
+
+.mobileFilterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-3;
+  width: 100%;
+
+  @include m.respond-up(v.$breakpoint-md) {
+    display: none;
+  }
+}
+
+.chipScroll {
+  @include m.snap-scroll-x;
+
+  gap: v.$space-2;
+  padding-bottom: v.$space-1;
+}
+
+.chip {
+  @include m.button-reset;
+  @include m.snap-item-auto;
+
+  background-color: v.$color-bg-elevated;
+  border: 1px solid v.$color-border-strong;
+  color: v.$color-text-secondary;
+  padding: v.$space-3 v.$space-6;
+  font-size: v.$font-size-base-sm;
+  font-weight: v.$font-weight-medium;
+  border-radius: v.$radius-full;
+  white-space: nowrap;
+  transition: all v.$transition-fast;
+
+  &.active {
+    @include m.active-pill;
+
+    border-color: v.$color-accent;
+  }
+}

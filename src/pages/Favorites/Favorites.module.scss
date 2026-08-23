@@ -1,0 +1,12 @@
+@use '@/styles/variables' as v;
+
+.favoritesPage {
+  width: 100%;
+}
+
+.title {
+  font-size: v.$font-size-3xl;
+  font-weight: v.$font-weight-bold;
+  color: v.$color-text-primary;
+  margin-bottom: v.$space-9;
+}

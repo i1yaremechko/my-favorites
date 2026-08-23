@@ -1,0 +1,162 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.header {
+  background-color: v.$color-bg-primary;
+  border-bottom: 1px solid v.$color-border;
+  position: sticky;
+  top: 0;
+  z-index: v.$z-header;
+  padding: v.$space-5 0;
+}
+
+.container {
+  @include m.page-container;
+
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-5;
+
+  @include m.respond-up(v.$breakpoint-md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: v.$space-3;
+  font-size: v.$font-size-2xl;
+  font-weight: v.$font-weight-bold;
+  color: v.$color-text-primary;
+  cursor: pointer;
+  user-select: none;
+}
+
+.logoText {
+  background: v.$color-accent-gradient;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.searchContainer {
+  flex-grow: 1;
+  max-width: 400px;
+}
+
+.searchInput {
+  @include m.surface-control;
+
+  width: 100%;
+  padding: v.$space-4 v.$space-6;
+  font-size: v.$font-size-base;
+
+  &::placeholder {
+    color: v.$color-text-faint;
+  }
+}
+
+.nav {
+  display: flex;
+  gap: v.$space-3;
+}
+
+.navBtn {
+  @include m.button-reset;
+
+  background-color: transparent;
+  border: 1px solid v.$color-border-strong;
+  color: v.$color-text-secondary;
+  padding: v.$space-3 v.$space-6;
+  border-radius: v.$radius-lg;
+  font-size: v.$font-size-base;
+  font-weight: v.$font-weight-medium;
+  transition: all v.$transition-fast;
+
+  &:hover {
+    color: v.$color-text-primary;
+    border-color: v.$color-border-hover;
+  }
+
+  &.active {
+    @include m.active-pill;
+  }
+}
+
+.authContainer {
+  display: flex;
+  align-items: center;
+  gap: v.$space-5;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: v.$space-4;
+}
+
+.userAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: v.$radius-full;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.userEmail {
+  font-size: v.$font-size-base-sm;
+  color: v.$color-text-secondary;
+  max-width: 150px;
+  @include m.text-ellipsis;
+
+  @include m.respond-up(v.$breakpoint-lg) {
+    max-width: 200px;
+  }
+}
+
+.authBtn {
+  @include m.button-reset;
+
+  background-color: v.$color-bg-muted;
+  border: 1px solid v.$color-border-input;
+  color: v.$color-text-primary;
+  padding: v.$space-3 v.$space-5;
+  border-radius: v.$radius-lg;
+  font-size: v.$font-size-base-sm;
+  transition: background v.$transition-fast;
+
+  &:hover {
+    background-color: #3a3a3a;
+  }
+}
+
+// Language switcher (UA / EN)
+.langSwitch {
+  display: flex;
+  background-color: v.$color-bg-elevated;
+  border-radius: v.$radius-lg;
+  padding: v.$space-1;
+  border: 1px solid v.$color-border-strong;
+}
+
+.langBtn {
+  @include m.button-reset;
+
+  color: v.$color-text-secondary;
+  padding: v.$space-2 v.$space-5;
+  font-size: v.$font-size-sm;
+  font-weight: v.$font-weight-semibold;
+  border-radius: v.$radius-md;
+  transition: all v.$transition-fast;
+
+  &:hover {
+    color: v.$color-text-primary;
+  }
+
+  &.active {
+    @include m.active-pill;
+  }
+}

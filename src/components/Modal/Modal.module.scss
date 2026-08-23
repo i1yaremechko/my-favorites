@@ -1,0 +1,87 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: v.$overlay-strong;
+  backdrop-filter: blur(5px);
+  @include m.flex-center;
+
+  z-index: v.$z-modal;
+  padding: v.$space-7;
+  animation: fadeIn v.$transition-fast;
+}
+
+.modal {
+  background-color: v.$color-bg-tertiary;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-2xl;
+  width: 100%;
+  max-width: v.$modal-max-width;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: v.$shadow-modal;
+  animation: scaleUp v.$transition-fast;
+}
+
+.header {
+  @include m.flex-between;
+
+  padding: v.$space-7 v.$space-8;
+  border-bottom: 1px solid v.$color-border;
+}
+
+.title {
+  font-size: v.$font-size-xl;
+  font-weight: v.$font-weight-semibold;
+  color: v.$color-text-primary;
+  margin: 0;
+}
+
+.closeBtn {
+  @include m.button-reset;
+
+  color: v.$color-text-secondary;
+  font-size: v.$font-size-3xl;
+  line-height: 1;
+  padding: v.$space-1;
+  transition: color v.$transition-fast;
+
+  &:hover {
+    color: v.$color-text-primary;
+  }
+}
+
+.body {
+  padding: v.$space-8;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

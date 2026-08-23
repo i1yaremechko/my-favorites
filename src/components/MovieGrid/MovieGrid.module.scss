@@ -1,0 +1,49 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.grid {
+  @include m.snap-scroll-x;
+
+  gap: v.$space-5;
+  width: 100%;
+  padding-bottom: v.$space-2;
+
+  >* {
+    @include m.snap-item-full;
+  }
+
+  @include m.respond-up(v.$breakpoint-sm) {
+    display: grid;
+    overflow-x: visible;
+    scroll-snap-type: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: v.$space-8;
+    padding-bottom: 0;
+
+    >* {
+      flex: initial;
+      scroll-snap-align: none;
+    }
+  }
+
+  @include m.respond-up(v.$breakpoint-lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @include m.respond-up(v.$breakpoint-xl) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.messageContainer {
+  @include m.flex-center;
+
+  min-height: 200px;
+  width: 100%;
+}
+
+.message {
+  color: v.$color-text-muted;
+  font-size: v.$font-size-lg;
+  text-align: center;
+}

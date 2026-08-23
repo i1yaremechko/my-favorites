@@ -1,0 +1,66 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: v.$space-5;
+  margin: v.$space-10 0;
+  flex-wrap: wrap;
+}
+
+.pageBtn {
+  @include m.surface-control;
+
+  padding: v.$space-3 v.$space-7;
+  font-size: v.$font-size-base;
+  cursor: pointer;
+  transition: all v.$transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: v.$color-bg-muted;
+    border-color: v.$color-accent;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.pagesList {
+  display: flex;
+  align-items: center;
+  gap: v.$space-2;
+}
+
+.pageNumberBtn {
+  @include m.button-reset;
+  @include m.flex-center;
+
+  background-color: v.$color-bg-elevated;
+  border: 1px solid v.$color-border-strong;
+  color: v.$color-text-secondary;
+  width: 38px;
+  height: 38px;
+  border-radius: v.$radius-lg;
+  font-size: v.$font-size-base;
+  font-weight: v.$font-weight-medium;
+  transition: all v.$transition-fast;
+
+  &:hover {
+    color: v.$color-text-primary;
+    border-color: v.$color-border-hover;
+  }
+
+  &.active {
+    @include m.active-pill;
+  }
+}
+
+.dots {
+  color: v.$color-text-faint;
+  padding: 0 v.$space-1;
+  font-size: v.$font-size-base;
+}

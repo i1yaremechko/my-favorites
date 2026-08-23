@@ -1,0 +1,39 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.footer {
+  background-color: v.$color-bg-primary;
+  border-top: 1px solid v.$color-border;
+  padding: v.$space-9 0;
+  margin-top: auto;
+}
+
+.container {
+  @include m.page-container;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: v.$space-3;
+  text-align: center;
+}
+
+.text {
+  color: v.$color-text-secondary;
+  font-size: v.$font-size-base;
+  margin: 0;
+}
+
+.brand {
+  color: v.$color-accent;
+  font-weight: v.$font-weight-semibold;
+}
+
+.subText {
+  color: v.$color-text-faint;
+  font-size: v.$font-size-sm;
+  margin: 0;
+}

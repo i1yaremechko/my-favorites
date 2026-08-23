@@ -1,0 +1,146 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-5;
+  padding-top: v.$space-5;
+  border-top: 1px solid v.$color-border;
+}
+
+.title {
+  font-size: v.$font-size-base-sm;
+  font-weight: v.$font-weight-semibold;
+  color: v.$color-text-secondary;
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  gap: v.$space-3;
+  align-items: flex-end;
+}
+
+.textarea {
+  @include m.surface-control;
+
+  flex: 1;
+  padding: v.$space-4 v.$space-5;
+  font-size: v.$font-size-base;
+  font-family: v.$font-family-base;
+  resize: none;
+
+  &::placeholder {
+    color: v.$color-text-faint;
+  }
+}
+
+.submitBtn {
+  @include m.button-reset;
+
+  background-color: v.$color-accent;
+  color: v.$color-text-on-accent;
+  padding: v.$space-4 v.$space-7;
+  border-radius: v.$radius-lg;
+  font-size: v.$font-size-base-sm;
+  font-weight: v.$font-weight-semibold;
+  transition: opacity v.$transition-fast;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.empty {
+  font-size: v.$font-size-base-sm;
+  color: v.$color-text-faint;
+  text-align: center;
+  margin: v.$space-3 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-5;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  gap: v.$space-4;
+  align-items: flex-start;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: v.$radius-full;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarFallback {
+  @include m.flex-center;
+
+  width: 32px;
+  height: 32px;
+  border-radius: v.$radius-full;
+  background-color: v.$color-bg-muted;
+  color: v.$color-text-secondary;
+  font-size: v.$font-size-base-sm;
+  font-weight: v.$font-weight-semibold;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.meta {
+  display: flex;
+  align-items: baseline;
+  gap: v.$space-3;
+  margin-bottom: v.$space-1;
+}
+
+.author {
+  font-size: v.$font-size-base-sm;
+  font-weight: v.$font-weight-semibold;
+  color: v.$color-text-primary;
+  @include m.text-ellipsis;
+}
+
+.date {
+  font-size: v.$font-size-xs;
+  color: v.$color-text-faint;
+  flex-shrink: 0;
+}
+
+.text {
+  font-size: v.$font-size-base-sm;
+  color: v.$color-text-secondary;
+  line-height: 1.5;
+  margin: 0;
+  word-break: break-word;
+}
+
+.deleteBtn {
+  @include m.button-reset;
+
+  color: v.$color-text-faint;
+  font-size: v.$font-size-xl;
+  line-height: 1;
+  padding: 0 v.$space-1;
+  flex-shrink: 0;
+
+  &:hover {
+    color: v.$color-accent-secondary;
+  }
+}
