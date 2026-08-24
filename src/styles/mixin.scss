@@ -6,6 +6,8 @@
   }
 }
 
+// Протилежність respond-up — стилі лише до вказаного breakpoint (мобільні
+// override'и: горизонтальний swipe-каталог, чіпи жанрів/років тощо).
 @mixin respond-down($breakpoint) {
   @media (max-width: ($breakpoint - 1)) {
     @content;
@@ -71,15 +73,19 @@
   }
 }
 
+// Ховає нативний скролбар (лишаючи скрол доступним тачем/колесом миші) —
+// потрібно для горизонтальних swipe-стрічок на мобільних.
 @mixin hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE/Edge
 
   &::-webkit-scrollbar {
-    display: none;
+    display: none; // Chrome/Safari
   }
 }
 
+// Горизонтальна прокручувана стрічка з "прилипанням" — основа для мобільного
+// каруселю фільмів і для скролу жанрів/років замість <select>.
 @mixin snap-scroll-x {
   display: flex;
   overflow-x: auto;
@@ -90,12 +96,14 @@
   @include hide-scrollbar;
 }
 
+// Елемент, що займає весь екран і "прилипає" по одному за swipe (картки фільмів).
 @mixin snap-item-full {
   flex: 0 0 100%;
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
 
+// Елемент довільної ширини, що теж прилипає при скролі (чіпи жанрів/років).
 @mixin snap-item-auto {
   flex: 0 0 auto;
   scroll-snap-align: start;

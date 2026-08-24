@@ -1,11 +1,13 @@
 import type { User } from '@supabase/supabase-js';
 import { useEffect, useState, useCallback } from 'react';
 
+
 import { Comments } from './components/Comments/Comments';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { Footer } from './components/Footer/Footer';
 import { Header } from './components/Header/Header';
 import { Modal } from './components/Modal/Modal';
+import { PlatformSearchLinks } from './components/PlatformSearchLinks/PlatformSearchLinks';
 import { WatchProviders } from './components/WatchProviders/WatchProviders';
 import { useLanguage } from './hooks/useLanguage';
 import { Favorites } from './pages/Favorites/Favorites';
@@ -16,7 +18,6 @@ import { tmdbApi } from './services/tmdbApi';
 import type { Movie } from './types/movie';
 import { localizeMovies } from './utils/localizeMovies';
 import { getTelegramWebApp, isTelegramMiniApp } from './utils/telegram';
-
 import './styles/global.scss';
 
 interface AppUser {
@@ -54,6 +55,7 @@ export function App() {
 
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [telegramAuthError, setTelegramAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     const webApp = getTelegramWebApp();
@@ -73,8 +75,12 @@ export function App() {
       if (isTelegramMiniApp()) {
         try {
           await signInWithTelegram();
+          setTelegramAuthError(null);
         } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
           console.error('Failed to automatically log in via Telegram:', error);
+          setTelegramAuthError(message);
+          getTelegramWebApp()?.showAlert(`Telegram auth error: ${message}`);
         }
       }
     };
@@ -126,8 +132,12 @@ export function App() {
     if (isTelegramMiniApp()) {
       try {
         await signInWithTelegram();
+        setTelegramAuthError(null);
       } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('Failed to re-authorize via Telegram:', error);
+        setTelegramAuthError(message);
+        getTelegramWebApp()?.showAlert(`Telegram auth error: ${message}`);
       }
       return;
     }
@@ -190,6 +200,7 @@ export function App() {
         avatarUrl={user?.avatarUrl}
         onLogin={handleRequestLogin}
         onLogout={handleLogout}
+        telegramAuthError={telegramAuthError}
       />
 
       <main style={{ flex: 1, padding: '24px 16px', maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
@@ -210,6 +221,7 @@ export function App() {
           />
         )}
       </main>
+
       <Footer />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={selectedMovie?.title}>
@@ -242,6 +254,10 @@ export function App() {
 
             <ErrorBoundary fallbackLabel="Where to watch section error">
               <WatchProviders movieId={selectedMovie.id} mediaType={selectedMovie.mediaType} />
+            </ErrorBoundary>
+
+            <ErrorBoundary fallbackLabel="Platforms search section error">
+              <PlatformSearchLinks title={selectedMovie.title} />
             </ErrorBoundary>
 
             <ErrorBoundary fallbackLabel="Comment section error">

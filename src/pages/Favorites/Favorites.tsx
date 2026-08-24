@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { Filters } from '@/components/Filters/Filters';
-import { MovieGrid } from '@/components/MovieGrid/MovieGrid';
-import { useLanguage } from '@/hooks/useLanguage';
-import type { Movie, MediaType } from '@/types/movie';
+import { Filters } from '../../components/Filters/Filters';
+import { MovieGrid } from '../../components/MovieGrid/MovieGrid';
+import { useLanguage } from '../../hooks/useLanguage';
+import type { Movie, MediaType } from '../../types/movie';
 
 import styles from './Favorites.module.scss';
 

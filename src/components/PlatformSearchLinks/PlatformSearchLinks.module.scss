@@ -1,0 +1,61 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.platformSearchLinks {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-3;
+  padding-top: v.$space-3;
+  border-top: 1px solid v.$color-border;
+}
+
+.title {
+  font-size: v.$font-size-base-sm;
+  font-weight: v.$font-weight-semibold;
+  color: v.$color-text-secondary;
+  margin: 0;
+}
+
+.logosRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.$space-3;
+}
+
+.platformLink {
+  @include m.flex-center;
+
+  gap: v.$space-2;
+  padding: v.$space-3 v.$space-5;
+  border-radius: v.$radius-lg;
+  border: 1px solid v.$color-border-strong;
+  background-color: v.$color-bg-elevated;
+  text-decoration: none;
+  transition:
+    transform v.$transition-fast,
+    border-color v.$transition-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: v.$color-accent;
+  }
+}
+
+.logo {
+  width: 20px;
+  height: 20px;
+  border-radius: v.$radius-sm;
+  flex-shrink: 0;
+}
+
+.name {
+  font-size: v.$font-size-base-sm;
+  color: v.$color-text-primary;
+  white-space: nowrap;
+}
+
+.hint {
+  font-size: v.$font-size-xs;
+  color: v.$color-text-faint;
+  margin: 0;
+}

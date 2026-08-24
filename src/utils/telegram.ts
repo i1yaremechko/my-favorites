@@ -15,6 +15,7 @@ export interface TelegramWebApp {
   ready: () => void;
   expand: () => void;
   close: () => void;
+  showAlert: (message: string, callback?: () => void) => void;
   BackButton: {
     show: () => void;
     hide: () => void;
@@ -34,6 +35,10 @@ export function getTelegramWebApp(): TelegramWebApp | null {
   return window.Telegram?.WebApp ?? null;
 }
 
+// SDK-скрипт (telegram-web-app.js) підключений завжди — і на звичайному сайті,
+// і в Mini App. Поза Telegram `initData` буде порожнім рядком, тому саме
+// його наявність, а не сам факт window.Telegram, є надійною ознакою того,
+// що застосунок відкрито всередині Telegram.
 export function isTelegramMiniApp(): boolean {
   return Boolean(getTelegramWebApp()?.initData);
 }

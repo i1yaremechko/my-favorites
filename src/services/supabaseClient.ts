@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-import type { Comment } from '@/types/comment';
-import type { MediaType, Movie } from '@/types/movie';
+import type { Comment } from '../types/comment';
+import type { MediaType, Movie } from '../types/movie';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
@@ -33,9 +33,18 @@ export interface CommentRecord {
 }
 
 export const supabaseService = {
+  // --- АВТЕНТИФІКАЦІЯ ---
+
   async signInWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        // Явно вказуємо поточний origin — Supabase все одно звірить його зі
+        // списком Redirect URLs у Auth → URL Configuration, і якщо там немає
+        // збігу, підставить Site URL за замовчуванням. Без цього рядка
+        // поведінка та сама, але так — явно й читабельно.
+        redirectTo: window.location.origin,
+      },
     });
     if (error) throw error;
     return data;
@@ -55,15 +64,19 @@ export const supabaseService = {
     return session?.user || null;
   },
 
+  // --- УЛЮБЛЕНІ ФІЛЬМИ (FAVORITES) ---
+
+  // Отримати список улюблених для конкретного користувача
   async getFavorites(userId: string): Promise<Movie[]> {
     const { data, error } = await supabase.from('favorites').select('*').eq('user_id', userId);
 
     if (error) throw error;
 
+    // Мапимо дані з бази назад у наш інтерфейс Movie
     return (data || []).map((item) => ({
       id: item.movie_id,
       title: item.title,
-      overview: '',
+      overview: '', // за потреби можна зберігати повністю або підтягувати з TMDB
       posterPath: item.poster_path,
       backdropPath: null,
       releaseDate: item.release_date,
@@ -75,6 +88,7 @@ export const supabaseService = {
     }));
   },
 
+  // Додати фільм до улюблених
   async addFavorite(userId: string, movie: Movie): Promise<void> {
     const record: FavoriteMovieRecord = {
       user_id: userId,
@@ -92,6 +106,7 @@ export const supabaseService = {
     if (error) throw error;
   },
 
+  // Видалити фільм з улюблених
   async removeFavorite(userId: string, movieId: number): Promise<void> {
     const { error } = await supabase
       .from('favorites')
@@ -102,6 +117,7 @@ export const supabaseService = {
     if (error) throw error;
   },
 
+  // Перевірити, чи у списку улюблених
   async isFavorite(userId: string, movieId: number): Promise<boolean> {
     const { data, error } = await supabase
       .from('favorites')
@@ -124,6 +140,7 @@ export const supabaseService = {
     return count || 0;
   },
 
+  // Отримати всі записи улюблених від усіх користувачів (для глобального каталогу)
   async getAllFavorites(): Promise<(Movie & { favoriteCount: number })[]> {
     const { data, error } = await supabase.from('favorites').select('*');
 
@@ -135,8 +152,10 @@ export const supabaseService = {
     for (const item of data || []) {
       const movieId = item.movie_id;
 
+      // Збільшуємо лічильник для цього movie_id
       countsMap.set(movieId, (countsMap.get(movieId) || 0) + 1);
 
+      // Зберігаємо об'єкт фільму (якщо ще не зберегли)
       if (!moviesMap.has(movieId)) {
         moviesMap.set(movieId, {
           id: movieId,
@@ -147,19 +166,23 @@ export const supabaseService = {
           releaseDate: item.release_date,
           voteAverage: item.vote_average,
           voteCount: 0,
-          genreIds: item.genre_ids || [],
+          genreIds: item.genre_ids || [], // Зберігаємо жанри, якщо вони є в базі, або пустий масив
           mediaType: item.media_type,
           runtime: item.runtime,
         });
       }
     }
 
+    // Повертаємо масив фільмів разом із підрахованим favoriteCount
     return Array.from(moviesMap.values()).map((movie) => ({
       ...movie,
       favoriteCount: countsMap.get(movie.id) || 1,
     }));
   },
 
+  // --- КОМЕНТАРІ ---
+
+  // Отримати всі коментарі під конкретним фільмом/серіалом (найновіші зверху)
   async getComments(movieId: number, mediaType: MediaType): Promise<Comment[]> {
     const { data, error } = await supabase
       .from('comments')
@@ -182,6 +205,10 @@ export const supabaseService = {
     }));
   },
 
+  // Додати коментар. author_name/author_avatar_url зберігаємо знімком на
+  // момент публікації (той самий підхід, що і з title у favorites) — це
+  // дозволяє показувати автора без потреби джойнити на auth.users, доступ до
+  // якого RLS все одно заборонив би для чужих записів.
   async addComment(params: {
     userId: string;
     movieId: number;
@@ -214,6 +241,7 @@ export const supabaseService = {
     };
   },
 
+  // Видалити свій коментар (RLS все одно заблокує чужий, .eq('user_id', ...) — подвійна підстраховка)
   async deleteComment(commentId: number, userId: string): Promise<void> {
     const { error } = await supabase
       .from('comments')

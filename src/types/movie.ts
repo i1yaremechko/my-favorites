@@ -33,6 +33,7 @@ export interface MovieFilterParams {
   language: Language;
 }
 
+// Провайдер перегляду (як платний, так і безкоштовний)
 export interface WatchProvider {
   providerId: number;
   providerName: string;
@@ -40,7 +41,9 @@ export interface WatchProvider {
 }
 
 export interface WatchProvidersResult {
-  paidProviders: WatchProvider[];
-  freeProviders: WatchProvider[];
+  paidProviders: WatchProvider[]; // flatrate (підписка) + rent + buy
+  freeProviders: WatchProvider[]; // free + ads (з рекламою)
+  // Посилання на сторінку TMDB/JustWatch із перегляду — за умовами використання
+  // цих даних TMDB вимагає лінкувати саме сюди, а не напряму на сервіс
   attributionLink: string | null;
 }

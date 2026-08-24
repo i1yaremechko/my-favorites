@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useLanguage } from '@/hooks/useLanguage';
 import { LANGUAGE_LABELS, LANGUAGES } from '@/types/language';
@@ -14,6 +14,7 @@ interface HeaderProps {
   avatarUrl?: string | null;
   onLogin?: () => void;
   onLogout?: () => void;
+  telegramAuthError?: string | null;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,6 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
   avatarUrl,
   onLogin,
   onLogout,
+  telegramAuthError,
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const { language, setLanguage, t } = useLanguage();
@@ -110,8 +112,13 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
           ) : isTelegramMiniApp() ? (
-            <button type="button" className={styles.authBtn} onClick={onLogin}>
-              {t('connectingTelegram')}
+            <button
+              type="button"
+              className={styles.authBtn}
+              onClick={onLogin}
+              title={telegramAuthError ?? undefined}
+            >
+              {telegramAuthError ? `${t('connectingTelegramError')} ↻` : t('connectingTelegram')}
             </button>
           ) : (
             <button type="button" className={styles.authBtn} onClick={onLogin}>

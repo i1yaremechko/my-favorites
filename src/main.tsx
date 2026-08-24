@@ -4,7 +4,8 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import { LanguageProvider } from './context/LanguageProvider.tsx'
 
-console.info(`[Favorite5] build: ${__BUILD_TIME__}`);
+// eslint-disable-next-line no-console
+console.info(`[my-favorite] build: ${__BUILD_TIME__}`);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

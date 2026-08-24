@@ -1,4 +1,4 @@
-import type { Language } from '@/types/language';
+import type { Language } from '../types/language';
 
 export const translations = {
   // Header
@@ -6,6 +6,7 @@ export const translations = {
   navHome: { uk: 'Головна', en: 'Home' },
   loginGoogle: { uk: 'Увійти через Google', en: 'Sign in with Google' },
   connectingTelegram: { uk: 'Підключення через Telegram...', en: 'Connecting via Telegram...' },
+  connectingTelegramError: { uk: 'Помилка входу — спробувати ще раз', en: 'Sign-in failed — tap to retry' },
   logout: { uk: 'Вийти', en: 'Log out' },
 
   // Filters
@@ -13,7 +14,7 @@ export const translations = {
   filterTv: { uk: 'Серіали', en: 'TV Shows' },
   allGenres: { uk: 'Усі жанри', en: 'All genres' },
   allYears: { uk: 'Усі роки', en: 'All years' },
-  yearOptionSuffix: { uk: ' рік', en: '' },
+  yearOptionSuffix: { uk: ' рік', en: '' }, // e.g. "2024 рік" vs "2024"
   viewModeDiscoverActive: { uk: 'Режим: Всі', en: 'Mode: All' },
   viewModeDiscoverInactive: { uk: 'Всі', en: 'All' },
 
@@ -55,13 +56,17 @@ export const translations = {
   // Watch providers (платно / безкоштовно)
   watchPaidTitle: { uk: 'Де подивитися платно', en: 'Where to watch (paid)' },
   watchFreeTitle: { uk: 'Де подивитися безплатно', en: 'Where to watch (free)' },
-  watchFreeAttribution: {
-    uk: 'Дані: JustWatch · Переглянути всі варіанти',
-    en: 'Data: JustWatch · View all options',
+  watchFreeAttribution: { uk: 'Дані: JustWatch · Переглянути всі варіанти', en: 'Data: JustWatch · View all options' },
+
+  // Пошук на українських платформах (unverified deep-link search, не TMDB-дані)
+  searchPlatformsTitle: { uk: 'Пошук на українських платформах', en: 'Search on Ukrainian platforms' },
+  searchPlatformsHint: {
+    uk: 'Ці кнопки відкривають пошук за назвою — наявність фільму на платформі не гарантована',
+    en: "These buttons open a search by title — availability on the platform isn't guaranteed",
   },
   watchFreeEmptyPrompt: {
     uk: 'Офіційних безкоштовних варіантів не знайдено. Знаєте, де подивитись? Напишіть у коментарях нижче 👇',
-    en: 'No official free options found. Know where to watch it? Let others know in the comments below 👇',
+    en: "No official free options found. Know where to watch it? Let others know in the comments below 👇",
   },
 
   // Коментарі
@@ -71,10 +76,7 @@ export const translations = {
     en: 'Share your thoughts or a link to where you watched it...',
   },
   commentsSubmit: { uk: 'Надіслати', en: 'Post' },
-  commentsEmpty: {
-    uk: 'Ще немає коментарів. Будьте першим!',
-    en: 'No comments yet. Be the first!',
-  },
+  commentsEmpty: { uk: 'Ще немає коментарів. Будьте першим!', en: 'No comments yet. Be the first!' },
   commentsLoginPrompt: { uk: 'Увійдіть, щоб залишити коментар', en: 'Sign in to leave a comment' },
   commentsDelete: { uk: 'Видалити', en: 'Delete' },
 

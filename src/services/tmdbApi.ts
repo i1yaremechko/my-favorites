@@ -1,11 +1,11 @@
-import { TMDB_LOCALES, type Language } from '@/types/language';
+import { TMDB_LOCALES, type Language } from '../types/language';
 import type {
   Movie,
   Genre,
   MovieFilterParams,
   MediaType,
   WatchProvidersResult,
-} from '@/types/movie';
+} from '../types/movie';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
 
@@ -14,6 +14,8 @@ const headers = {
   Authorization: `Bearer ${import.meta.env.VITE_TMDB_ACCESS_TOKEN || ''}`,
 };
 
+// Допоміжна функція для мапінгу даних з TMDB у нашу модель Movie
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mapMovieData = (item: any, typeOverride?: 'movie' | 'tv'): Movie => {
   const mediaType = typeOverride || item.media_type || (item.first_air_date ? 'tv' : 'movie');
 
@@ -36,6 +38,7 @@ const mapMovieData = (item: any, typeOverride?: 'movie' | 'tv'): Movie => {
 };
 
 export const tmdbApi = {
+  // Отримання списку фільмів або серіалів із фільтрацією та пошуком
   async getMovies(params: MovieFilterParams): Promise<{ movies: Movie[]; totalPages: number }> {
     const mediaType = params.mediaType || 'movie';
     const locale = TMDB_LOCALES[params.language];
@@ -63,11 +66,12 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Error loading data from TMDB server');
+      throw new Error('Помилка при завантаженні даних із сервера TMDB');
     }
 
     const data = await response.json();
 
+    // Фільтруємо результати для пошуку (якщо 'multi', можуть потрапити особи, залишаємо лише movie та tv)
     const rawResults = data.results || [];
     const filteredResults =
       params.query && !params.mediaType
@@ -83,6 +87,7 @@ export const tmdbApi = {
     };
   },
 
+  // Детальна інформація про конкретний фільм або серіал (для отримання точного runtime)
   async getDetails(
     id: number,
     mediaType: MediaType = 'movie',
@@ -96,13 +101,14 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to load details');
+      throw new Error('Не вдалося завантажити деталі');
     }
 
     const data = await response.json();
     return mapMovieData(data, mediaType);
   },
 
+  // Отримання списку жанрів українською
   async getGenres(mediaType: MediaType = 'movie', language: Language = 'uk'): Promise<Genre[]> {
     const locale = TMDB_LOCALES[language];
     const response = await fetch(`${BASE_URL}/genre/${mediaType}/list?language=${locale}`, {
@@ -112,13 +118,16 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to load genres');
+      throw new Error('Не вдалося завантажити жанри');
     }
 
     const data = await response.json();
     return data.genres;
   },
 
+  // Де подивитися: платно (flatrate/rent/buy) і безкоштовно (free/ads), в Україні.
+  // Дані надає JustWatch через TMDB; за умовами використання лінкуємось саме на
+  // TMDB-сторінку перегляду (attributionLink), а не напряму на сервіс.
   async getWatchProviders(
     id: number,
     mediaType: MediaType = 'movie'
@@ -130,16 +139,28 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to load viewing information');
+      throw new Error('Не вдалося завантажити інформацію про перегляд');
     }
 
     const data = await response.json();
     const regionData = data.results?.UA;
 
+    // Тимчасова діагностика (лише в dev-режимі, у білді не потрапляє) —
+    // допомагає з'ясувати, чи TMDB взагалі має дані по Україні для цього
+    // тайтла, чи проблема десь інде.
+    if (import.meta.env.DEV) {
+      console.warn(
+        `[watch-providers] ${mediaType}/${id} — доступні регіони:`,
+        Object.keys(data.results ?? {})
+      );
+      console.warn(`[watch-providers] ${mediaType}/${id} — дані для UA:`, regionData ?? '(відсутні)');
+    }
+
     if (!regionData) {
       return { paidProviders: [], freeProviders: [], attributionLink: null };
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const dedupeProviders = (raw: any[]) => {
       const seen = new Set<number>();
       return raw
@@ -162,7 +183,10 @@ export const tmdbApi = {
       ...(regionData.buy ?? []),
     ]);
 
-    const freeProviders = dedupeProviders([...(regionData.free ?? []), ...(regionData.ads ?? [])]);
+    const freeProviders = dedupeProviders([
+      ...(regionData.free ?? []),
+      ...(regionData.ads ?? []),
+    ]);
 
     return { paidProviders, freeProviders, attributionLink: regionData.link ?? null };
   },
