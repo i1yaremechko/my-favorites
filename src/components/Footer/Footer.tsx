@@ -15,7 +15,7 @@ export const Footer: React.FC<FooterProps> = ({ onSupportClick }) => {
       <div className={styles.container}>
         <div className={styles.content}>
           <p className={styles.text}>
-            © {currentYear} <span className={styles.brand}>My-Favourite</span>. {t('footerDescription')}
+            © {currentYear} <span className={styles.brand}>Favourite5</span>. {t('footerDescription')}
           </p>
           <p className={styles.subText}>{t('footerMade')}</p>
 

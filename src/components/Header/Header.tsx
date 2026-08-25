@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
             }
           }}
         >
-          🎬 <span className={styles.logoText}>Favourite</span>
+          🎬 <span className={styles.logoText}>Favourite5</span>
         </div>
 
         <div className={styles.searchContainer}>
@@ -84,7 +84,7 @@ export const Header: React.FC<HeaderProps> = ({
             className={`${styles.navBtn} ${activeTab === 'favorites' ? styles.active : ''}`}
             onClick={() => onTabChange('favorites')}
           >
-            My-Favorites
+            My-Favorite5
           </button>
         </nav>
 
