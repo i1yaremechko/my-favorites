@@ -1,6 +1,3 @@
--- Таблиця коментарів під фільмами/серіалами.
--- Читати можуть усі, писати/видаляти — тільки автор (RLS нижче).
-
 create table if not exists public.comments (
   id bigint generated always as identity primary key,
   user_id uuid references auth.users(id) on delete cascade not null,

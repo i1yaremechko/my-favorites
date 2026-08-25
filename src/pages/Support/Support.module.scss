@@ -1,0 +1,140 @@
+@use '@/styles/variables' as v;
+@use '@/styles/mixin' as m;
+
+.supportPage {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: v.$font-size-3xl;
+  font-weight: v.$font-weight-bold;
+  color: v.$color-text-primary;
+  margin-bottom: v.$space-9;
+}
+
+.section {
+  background-color: v.$color-bg-secondary;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-xl;
+  padding: v.$space-8;
+  margin-bottom: v.$space-8;
+}
+
+.sectionTitle {
+  font-size: v.$font-size-xl;
+  font-weight: v.$font-weight-semibold;
+  color: v.$color-text-primary;
+  margin: 0 0 v.$space-2;
+}
+
+.sectionHint {
+  font-size: v.$font-size-base-sm;
+  color: v.$color-text-secondary;
+  margin: 0 0 v.$space-6;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-4;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-4;
+
+  @include m.respond-up(v.$breakpoint-sm) {
+    flex-direction: row;
+  }
+}
+
+.input,
+.textarea {
+  @include m.surface-control;
+
+  padding: v.$space-4 v.$space-5;
+  font-size: v.$font-size-base;
+  font-family: v.$font-family-base;
+  flex: 1;
+
+  &::placeholder {
+    color: v.$color-text-faint;
+  }
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.submitBtn {
+  @include m.button-reset;
+
+  align-self: flex-start;
+  background-color: v.$color-accent;
+  color: v.$color-text-on-accent;
+  padding: v.$space-4 v.$space-8;
+  border-radius: v.$radius-lg;
+  font-size: v.$font-size-base;
+  font-weight: v.$font-weight-semibold;
+  transition: opacity v.$transition-fast;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.successMsg {
+  color: v.$color-accent;
+  font-size: v.$font-size-base-sm;
+  margin: 0;
+}
+
+.errorMsg {
+  color: v.$color-accent-secondary;
+  font-size: v.$font-size-base-sm;
+  margin: 0;
+}
+
+.donateLinks {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-4;
+
+  @include m.respond-up(v.$breakpoint-sm) {
+    flex-direction: row;
+  }
+}
+
+.donateCard {
+  @include m.surface-control;
+
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-1;
+  padding: v.$space-6;
+  text-decoration: none;
+  transition:
+    transform v.$transition-fast,
+    border-color v.$transition-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: v.$color-accent;
+  }
+}
+
+.donateLabel {
+  font-size: v.$font-size-lg;
+  font-weight: v.$font-weight-semibold;
+  color: v.$color-text-primary;
+}
+
+.donateDescription {
+  font-size: v.$font-size-sm;
+  color: v.$color-text-faint;
+}

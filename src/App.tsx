@@ -1,7 +1,6 @@
 import type { User } from '@supabase/supabase-js';
 import { useEffect, useState, useCallback } from 'react';
 
-
 import { Comments } from './components/Comments/Comments';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { Footer } from './components/Footer/Footer';
@@ -12,12 +11,15 @@ import { WatchProviders } from './components/WatchProviders/WatchProviders';
 import { useLanguage } from './hooks/useLanguage';
 import { Favorites } from './pages/Favorites/Favorites';
 import { Home } from './pages/Home/Home';
+import { Support } from './pages/Support/Support';
 import { supabaseService, supabase } from './services/supabaseClient';
 import { signInWithTelegram } from './services/telegramAuth';
 import { tmdbApi } from './services/tmdbApi';
 import type { Movie } from './types/movie';
+import type { Tab } from './types/tab';
 import { localizeMovies } from './utils/localizeMovies';
 import { getTelegramWebApp, isTelegramMiniApp } from './utils/telegram';
+
 import './styles/global.scss';
 
 interface AppUser {
@@ -45,7 +47,7 @@ function buildAppUser(authUser: User | null): AppUser | null {
 
 export function App() {
   const { language, t } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'home' | 'favorites'>('home');
+  const [activeTab, setActiveTab] = useState<Tab>('home');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [user, setUser] = useState<AppUser | null>(null);
 
@@ -204,14 +206,15 @@ export function App() {
       />
 
       <main style={{ flex: 1, padding: '24px 16px', maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
-        {activeTab === 'home' ? (
+        {activeTab === 'home' && (
           <Home
             searchQuery={searchQuery}
             favoritesIds={favoritesIds}
             onToggleFavorite={handleToggleFavorite}
             onSelectMovie={handleSelectMovie}
           />
-        ) : (
+        )}
+        {activeTab === 'favorites' && (
           <Favorites
             favoriteMovies={favorites}
             favoritesIds={favoritesIds}
@@ -220,9 +223,12 @@ export function App() {
             isLoading={isFavoritesLoading}
           />
         )}
+        {activeTab === 'support' && (
+          <Support currentUser={user ? { id: user.id, email: user.email } : null} />
+        )}
       </main>
 
-      <Footer />
+      <Footer onSupportClick={() => setActiveTab('support')} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={selectedMovie?.title}>
         {selectedMovie && (

@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useLanguage } from '@/hooks/useLanguage';
 import { LANGUAGE_LABELS, LANGUAGES } from '@/types/language';
+import type { Tab } from '@/types/tab';
 import { isTelegramMiniApp } from '@/utils/telegram';
 
 import styles from './Header.module.scss';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
-  activeTab: 'home' | 'favorites';
-  onTabChange: (tab: 'home' | 'favorites') => void;
+  activeTab: Tab;
+  onTabChange: (tab: Tab) => void;
   displayName?: string | null;
   avatarUrl?: string | null;
   onLogin?: () => void;
@@ -57,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
             }
           }}
         >
-          🎬 <span className={styles.logoText}>Favourite5</span>
+          🎬 <span className={styles.logoText}>Favourite</span>
         </div>
 
         <div className={styles.searchContainer}>
@@ -83,7 +84,7 @@ export const Header: React.FC<HeaderProps> = ({
             className={`${styles.navBtn} ${activeTab === 'favorites' ? styles.active : ''}`}
             onClick={() => onTabChange('favorites')}
           >
-            My-Favorite5
+            My-Favorites
           </button>
         </nav>
 

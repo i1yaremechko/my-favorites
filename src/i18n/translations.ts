@@ -6,7 +6,10 @@ export const translations = {
   navHome: { uk: 'Головна', en: 'Home' },
   loginGoogle: { uk: 'Увійти через Google', en: 'Sign in with Google' },
   connectingTelegram: { uk: 'Підключення через Telegram...', en: 'Connecting via Telegram...' },
-  connectingTelegramError: { uk: 'Помилка входу — спробувати ще раз', en: 'Sign-in failed — tap to retry' },
+  connectingTelegramError: {
+    uk: 'Помилка входу — спробувати ще раз',
+    en: 'Sign-in failed — tap to retry',
+  },
   logout: { uk: 'Вийти', en: 'Log out' },
 
   // Filters
@@ -56,17 +59,23 @@ export const translations = {
   // Watch providers (платно / безкоштовно)
   watchPaidTitle: { uk: 'Де подивитися платно', en: 'Where to watch (paid)' },
   watchFreeTitle: { uk: 'Де подивитися безплатно', en: 'Where to watch (free)' },
-  watchFreeAttribution: { uk: 'Дані: JustWatch · Переглянути всі варіанти', en: 'Data: JustWatch · View all options' },
+  watchFreeAttribution: {
+    uk: 'Дані: JustWatch · Переглянути всі варіанти',
+    en: 'Data: JustWatch · View all options',
+  },
 
   // Пошук на українських платформах (unverified deep-link search, не TMDB-дані)
-  searchPlatformsTitle: { uk: 'Пошук на українських платформах', en: 'Search on Ukrainian platforms' },
+  searchPlatformsTitle: {
+    uk: 'Пошук на українських платформах',
+    en: 'Search on Ukrainian platforms',
+  },
   searchPlatformsHint: {
     uk: 'Ці кнопки відкривають пошук за назвою — наявність фільму на платформі не гарантована',
     en: "These buttons open a search by title — availability on the platform isn't guaranteed",
   },
   watchFreeEmptyPrompt: {
     uk: 'Офіційних безкоштовних варіантів не знайдено. Знаєте, де подивитись? Напишіть у коментарях нижче 👇',
-    en: "No official free options found. Know where to watch it? Let others know in the comments below 👇",
+    en: 'No official free options found. Know where to watch it? Let others know in the comments below 👇',
   },
 
   // Коментарі
@@ -76,7 +85,10 @@ export const translations = {
     en: 'Share your thoughts or a link to where you watched it...',
   },
   commentsSubmit: { uk: 'Надіслати', en: 'Post' },
-  commentsEmpty: { uk: 'Ще немає коментарів. Будьте першим!', en: 'No comments yet. Be the first!' },
+  commentsEmpty: {
+    uk: 'Ще немає коментарів. Будьте першим!',
+    en: 'No comments yet. Be the first!',
+  },
   commentsLoginPrompt: { uk: 'Увійдіть, щоб залишити коментар', en: 'Sign in to leave a comment' },
   commentsDelete: { uk: 'Видалити', en: 'Delete' },
 
@@ -88,6 +100,39 @@ export const translations = {
   footerMade: {
     uk: 'Зроблено з любов’ю до кіно та веб-розробки.',
     en: 'Made with love for cinema and web development.',
+  },
+  footerSupportLink: { uk: '💛 Подякувати розробникам', en: '💛 Support the developers' },
+
+  // Support page
+  supportTitle: { uk: 'Підтримка та зворотний зв\u2019язок', en: 'Support & feedback' },
+  feedbackTitle: { uk: 'Зворотний зв\u2019язок', en: 'Feedback' },
+  feedbackHint: {
+    uk: 'Питання, пропозиції, знайшли баг, чи просто хочете подякувати словом — пишіть тут.',
+    en: 'Questions, suggestions, bug reports, or just a thank-you note — write here.',
+  },
+  feedbackNamePlaceholder: { uk: 'Ім\u2019я (необов\u2019язково)', en: 'Name (optional)' },
+  feedbackEmailPlaceholder: { uk: 'Email (необов\u2019язково)', en: 'Email (optional)' },
+  feedbackMessagePlaceholder: { uk: 'Ваше повідомлення...', en: 'Your message...' },
+  feedbackSubmit: { uk: 'Надіслати', en: 'Send' },
+  feedbackSending: { uk: 'Надсилаємо...', en: 'Sending...' },
+  feedbackSuccess: { uk: 'Дякуємо! Повідомлення надіслано.', en: 'Thank you! Message sent.' },
+  feedbackError: {
+    uk: 'Не вдалося надіслати. Спробуйте ще раз пізніше.',
+    en: 'Failed to send. Please try again later.',
+  },
+  donateTitle: { uk: 'Підтримати розробників', en: 'Support the developers' },
+  donateHint: {
+    uk: 'Якщо застосунок був корисним і хочете підтримати розробку — буде дуже приємно 💛',
+    en: "If the app was useful and you'd like to support development — it would mean a lot 💛",
+  },
+
+  supportPrivatLabel: {
+    uk: 'Конверт ПриватБанку',
+    en: 'PrivatBank Jar',
+  },
+  supportPrivatDesc: {
+    uk: 'Зручно для карток ПриватБанку та інших українських банків',
+    en: 'Convenient for PrivatBank and other Ukrainian cards',
   },
 } satisfies Record<string, Record<Language, string>>;
 

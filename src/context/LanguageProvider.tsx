@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import { translations, type TranslationKey } from '../i18n/translations';
-import { LANGUAGES, type Language } from '../types/language';
+import { translations, type TranslationKey } from '@/i18n/translations';
+import { LANGUAGES, type Language } from '@/types/language';
 
 import { LanguageContext } from './languageContext';
 
@@ -10,7 +10,6 @@ const STORAGE_KEY = 'my-favorite:language';
 const isLanguage = (value: string | null): value is Language =>
   !!value && (LANGUAGES as string[]).includes(value);
 
-// Визначаємо мову за замовчуванням: збережений вибір -> мова браузера -> uk.
 const getInitialLanguage = (): Language => {
   if (typeof window === 'undefined') return 'uk';
 
@@ -28,9 +27,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setLanguageState(next);
     try {
       window.localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      // localStorage може бути недоступним (приватний режим тощо) — не критично
-    }
+    } catch { }
   }, []);
 
   const t = useCallback((key: TranslationKey) => translations[key][language], [language]);
