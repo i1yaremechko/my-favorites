@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { Filters, type ViewMode } from '../../components/Filters/Filters';
-import { MovieGrid } from '../../components/MovieGrid/MovieGrid';
-import { Pagination } from '../../components/Pagination/Pagination';
-import { useLanguage } from '../../hooks/useLanguage';
-import { supabaseService } from '../../services/supabaseClient';
-import { tmdbApi } from '../../services/tmdbApi';
-import type { Movie, MediaType, MovieFilterParams } from '../../types/movie';
-import { localizeMovies } from '../../utils/localizeMovies';
+import { Filters, type ViewMode } from '@/components/Filters/Filters';
+import { MovieGrid } from '@/components/MovieGrid/MovieGrid';
+import { Pagination } from '@/components/Pagination/Pagination';
+import { useLanguage } from '@/hooks/useLanguage';
+import { supabaseService } from '@/services/supabaseClient';
+import { tmdbApi } from '@/services/tmdbApi';
+import type { Movie, MediaType, MovieFilterParams } from '@/types/movie';
+import { localizeMovies } from '@/utils/localizeMovies';
 
 import styles from './Home.module.scss';
 
@@ -17,6 +17,8 @@ interface HomeProps {
   onToggleFavorite: (movie: Movie) => void;
   onSelectMovie: (movie: Movie) => void;
 }
+
+const ITEMS_PER_PAGE = 20;
 
 export const Home: React.FC<HomeProps> = ({
   searchQuery,
@@ -47,18 +49,14 @@ export const Home: React.FC<HomeProps> = ({
     setIsLoading(true);
     try {
       if (viewMode === 'catalog') {
-        // Отримуємо вже згруповані фільми з правильними лічильниками
         let fetchedMovies = await supabaseService.getAllFavorites();
 
-        // Фільтрація за медіа-типом
         fetchedMovies = fetchedMovies.filter((m) => m.mediaType === mediaType);
 
-        // Фільтрація за жанром
         if (selectedGenreId) {
           fetchedMovies = fetchedMovies.filter((m) => m.genreIds?.includes(selectedGenreId));
         }
 
-        // Фільтрація за конкретним роком
         if (selectedYear) {
           fetchedMovies = fetchedMovies.filter((m) => {
             if (!m.releaseDate) return false;
@@ -67,29 +65,29 @@ export const Home: React.FC<HomeProps> = ({
           });
         }
 
-        // Підтягуємо назви/описи обраною мовою — у Supabase вони збережені
-        // мовою, яка була активна на момент додавання фільму в улюблені
         fetchedMovies = await localizeMovies(fetchedMovies, language);
 
-        // Фільтрація за пошуковим запитом (вже по локалізованій назві)
         if (searchQuery.trim()) {
           const query = searchQuery.toLowerCase();
           fetchedMovies = fetchedMovies.filter((m) => m.title.toLowerCase().includes(query));
         }
 
-        // Сортуємо за народним рейтингом (від найбільшої кількості додаванень)
         fetchedMovies.sort((a, b) => b.favoriteCount - a.favoriteCount);
 
-        setMovies(fetchedMovies);
-        setTotalPages(1);
+        const calculatedTotalPages = Math.ceil(fetchedMovies.length / ITEMS_PER_PAGE) || 1;
+        setTotalPages(calculatedTotalPages);
+
+        const startIndex = (page - 1) * ITEMS_PER_PAGE;
+        const paginatedMovies = fetchedMovies.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+        setMovies(paginatedMovies);
       } else {
-        // Режим 2: Всі фільми з TMDB, відсортовані за популярністю та актуальністю з урахуванням року та жанру
         const params: MovieFilterParams = {
           page,
           mediaType,
           genreId: selectedGenreId,
           year: selectedYear,
-          sortBy: 'popularity.desc', // Замість 'release_date.desc' ставимо популярність
+          sortBy: 'popularity.desc',
           query: searchQuery.trim() || undefined,
           language,
         };
@@ -99,7 +97,7 @@ export const Home: React.FC<HomeProps> = ({
         setTotalPages(data.totalPages);
       }
     } catch (error) {
-      console.error('Помилка завантаження фільмів:', error);
+      console.error('Error loading movies:', error);
     } finally {
       setIsLoading(false);
     }
@@ -130,16 +128,14 @@ export const Home: React.FC<HomeProps> = ({
         isLoading={isLoading}
       />
 
-      {viewMode === 'discover' && (
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={(newPage) => {
-            setPage(newPage);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-      )}
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={(newPage) => {
+          setPage(newPage);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
     </div>
   );
 };

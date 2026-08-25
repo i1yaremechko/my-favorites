@@ -1,19 +1,12 @@
-import { tmdbApi } from '../services/tmdbApi';
-import type { Language } from '../types/language';
-import type { Movie } from '../types/movie';
+import { tmdbApi } from '@/services/tmdbApi';
+import type { Language } from '@/types/language';
+import type { Movie } from '@/types/movie';
 
-// Записи улюблених у Supabase зберігають title/overview тією мовою, яка була
-// активна в момент додавання фільму в улюблені (текст "заморожений" у БД).
-// Тому при перемиканні мови інтерфейсу назви фільмів з каталогу/улюблених
-// самі по собі не змінюються. Цей кеш + функція нижче підтягують актуальну
-// локалізовану версію напряму з TMDB за id фільму.
 const detailsCache = new Map<string, Movie>();
 
 const cacheKey = (id: number, mediaType: Movie['mediaType'], language: Language) =>
   `${language}:${mediaType}:${id}`;
 
-// Обмежуємо кількість одночасних запитів до TMDB, щоб не влаштовувати "залп"
-// з десятків паралельних fetch-ів при завантаженні великого каталогу улюблених.
 async function mapWithConcurrency<T, R>(
   items: T[],
   limit: number,
@@ -36,8 +29,6 @@ async function mapWithConcurrency<T, R>(
   return results;
 }
 
-// Підтягує локалізовані title/overview (та інші мовозалежні поля) з TMDB для
-// кожного фільму, зберігаючи Supabase-специфічні поля на кшталт favoriteCount.
 export async function localizeMovies<T extends Movie>(
   movies: T[],
   language: Language
@@ -51,8 +42,8 @@ export async function localizeMovies<T extends Movie>(
         details = await tmdbApi.getDetails(movie.id, movie.mediaType, language);
         detailsCache.set(key, details);
       } catch (err) {
-        console.error('Не вдалося підтягнути локалізовані дані з TMDB:', err);
-        return movie; // TMDB недоступний — показуємо те, що вже маємо
+        console.error('Failed to pull localized data from TMDB:', err);
+        return movie;
       }
     }
 
