@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
             }
           }}
         >
-          🎬 <span className={styles.logoText}>Favourite5</span>
+          🎬 <span className={styles.logoText}>Favorite5</span>
         </div>
 
         <div className={styles.searchContainer}>
