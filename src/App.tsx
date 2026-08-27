@@ -1,5 +1,6 @@
 import type { User } from '@supabase/supabase-js';
-import { useEffect, useState, useCallback } from 'react';
+import { lazy, Suspense, useEffect, useState, useCallback } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 
 import { Comments } from './components/Comments/Comments';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
@@ -9,18 +10,19 @@ import { Modal } from './components/Modal/Modal';
 import { PlatformSearchLinks } from './components/PlatformSearchLinks/PlatformSearchLinks';
 import { WatchProviders } from './components/WatchProviders/WatchProviders';
 import { useLanguage } from './hooks/useLanguage';
-import { Favorites } from './pages/Favorites/Favorites';
-import { Home } from './pages/Home/Home';
-import { Support } from './pages/Support/Support';
 import { supabaseService, supabase } from './services/supabaseClient';
 import { signInWithTelegram } from './services/telegramAuth';
 import { tmdbApi } from './services/tmdbApi';
 import type { Movie } from './types/movie';
 import type { Tab } from './types/tab';
-import { localizeMovies } from './utils/localizeMovies';
 import { getTelegramWebApp, isTelegramMiniApp } from './utils/telegram';
-
 import './styles/global.scss';
+
+const Home = lazy(() => import('./pages/Home/Home').then((m) => ({ default: m.Home })));
+const Favorites = lazy(() =>
+  import('./pages/Favorites/Favorites').then((m) => ({ default: m.Favorites }))
+);
+const Support = lazy(() => import('./pages/Support/Support').then((m) => ({ default: m.Support })));
 
 interface AppUser {
   id: string;
@@ -47,7 +49,9 @@ function buildAppUser(authUser: User | null): AppUser | null {
 
 export function App() {
   const { language, t } = useLanguage();
-  const [activeTab, setActiveTab] = useState<Tab>('home');
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [user, setUser] = useState<AppUser | null>(null);
 
@@ -58,6 +62,16 @@ export function App() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [telegramAuthError, setTelegramAuthError] = useState<string | null>(null);
+
+  const activeTab: Tab = location.pathname === '/favorites' ? 'favorites' : 'home';
+
+  const handleTabChange = (tab: Tab) => {
+    if (tab === 'favorites') {
+      navigate('/favorites');
+    } else {
+      navigate('/');
+    }
+  };
 
   useEffect(() => {
     const webApp = getTelegramWebApp();
@@ -80,7 +94,7 @@ export function App() {
           setTelegramAuthError(null);
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
-          console.error('Failed to automatically log in via Telegram:', error);
+          console.error('Telegram auto sign-in failed:', error);
           setTelegramAuthError(message);
           getTelegramWebApp()?.showAlert(`Telegram auth error: ${message}`);
         }
@@ -108,15 +122,14 @@ export function App() {
     setIsFavoritesLoading(true);
     try {
       const data = await supabaseService.getFavorites(user.id);
-      const localized = await localizeMovies(data, language);
-      setFavorites(localized);
-      setFavoritesIds(localized.map((m) => m.id));
+      setFavorites(data);
+      setFavoritesIds(data.map((m) => m.id));
     } catch (error) {
-      console.error('Error loading favorites:', error);
+      console.error('Failed to load favorites:', error);
     } finally {
       setIsFavoritesLoading(false);
     }
-  }, [user, language]);
+  }, [user]);
 
   useEffect(() => {
     loadFavorites();
@@ -126,7 +139,7 @@ export function App() {
     try {
       await supabaseService.signInWithGoogle();
     } catch (error) {
-      console.error('Error logging in:', error);
+      console.error('Google sign-in failed:', error);
     }
   };
 
@@ -137,7 +150,7 @@ export function App() {
         setTelegramAuthError(null);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        console.error('Failed to re-authorize via Telegram:', error);
+        console.error('Telegram sign-in retry failed:', error);
         setTelegramAuthError(message);
         getTelegramWebApp()?.showAlert(`Telegram auth error: ${message}`);
       }
@@ -154,7 +167,7 @@ export function App() {
       setFavorites([]);
       setFavoritesIds([]);
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Sign-out failed:', error);
     }
   };
 
@@ -178,7 +191,7 @@ export function App() {
         setFavorites((prev) => [...prev, movie]);
       }
     } catch (error) {
-      console.error('Error updating favorites:', error);
+      console.error('Failed to update favorites:', error);
     }
   };
 
@@ -197,7 +210,7 @@ export function App() {
       <Header
         onSearch={setSearchQuery}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         displayName={user?.displayName}
         avatarUrl={user?.avatarUrl}
         onLogin={handleRequestLogin}
@@ -206,29 +219,40 @@ export function App() {
       />
 
       <main style={{ flex: 1, padding: '24px 16px', maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
-        {activeTab === 'home' && (
-          <Home
-            searchQuery={searchQuery}
-            favoritesIds={favoritesIds}
-            onToggleFavorite={handleToggleFavorite}
-            onSelectMovie={handleSelectMovie}
-          />
-        )}
-        {activeTab === 'favorites' && (
-          <Favorites
-            favoriteMovies={favorites}
-            favoritesIds={favoritesIds}
-            onToggleFavorite={handleToggleFavorite}
-            onSelectMovie={handleSelectMovie}
-            isLoading={isFavoritesLoading}
-          />
-        )}
-        {activeTab === 'support' && (
-          <Support currentUser={user ? { id: user.id, email: user.email } : null} />
-        )}
+        <Suspense fallback={null}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  searchQuery={searchQuery}
+                  favoritesIds={favoritesIds}
+                  onToggleFavorite={handleToggleFavorite}
+                  onSelectMovie={handleSelectMovie}
+                />
+              }
+            />
+            <Route
+              path="/favorites"
+              element={
+                <Favorites
+                  favoriteMovies={favorites}
+                  favoritesIds={favoritesIds}
+                  onToggleFavorite={handleToggleFavorite}
+                  onSelectMovie={handleSelectMovie}
+                  isLoading={isFavoritesLoading}
+                />
+              }
+            />
+            <Route
+              path="/support"
+              element={<Support currentUser={user ? { id: user.id, email: user.email } : null} />}
+            />
+          </Routes>
+        </Suspense>
       </main>
 
-      <Footer onSupportClick={() => setActiveTab('support')} />
+      <Footer />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={selectedMovie?.title}>
         {selectedMovie && (
@@ -258,15 +282,15 @@ export function App() {
               )}
             </div>
 
-            <ErrorBoundary fallbackLabel="Where to watch section error">
+            <ErrorBoundary fallbackLabel="Watch providers section failed to load">
               <WatchProviders movieId={selectedMovie.id} mediaType={selectedMovie.mediaType} />
             </ErrorBoundary>
 
-            <ErrorBoundary fallbackLabel="Platforms search section error">
+            <ErrorBoundary fallbackLabel="Platform search links failed to load">
               <PlatformSearchLinks title={selectedMovie.title} />
             </ErrorBoundary>
 
-            <ErrorBoundary fallbackLabel="Comment section error">
+            <ErrorBoundary fallbackLabel="Comments section failed to load">
               <Comments
                 movieId={selectedMovie.id}
                 mediaType={selectedMovie.mediaType}

@@ -40,8 +40,6 @@ export interface FeedbackRecord {
 }
 
 export const supabaseService = {
-  // --- АВТЕНТИФІКАЦІЯ ---
-
   async signInWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -136,39 +134,41 @@ export const supabaseService = {
     return count || 0;
   },
 
-  async getAllFavorites(): Promise<(Movie & { favoriteCount: number })[]> {
-    const { data, error } = await supabase.from('favorites').select('*');
+  async getFavoriteCounts(movieIds: number[]): Promise<Record<number, number>> {
+    if (movieIds.length === 0) return {};
+
+    const { data, error } = await supabase
+      .from('favorites_summary')
+      .select('movie_id, favorite_count')
+      .in('movie_id', movieIds);
 
     if (error) throw error;
 
-    const countsMap = new Map<number, number>();
-    const moviesMap = new Map<number, Movie>();
-
-    for (const item of data || []) {
-      const movieId = item.movie_id;
-
-      countsMap.set(movieId, (countsMap.get(movieId) || 0) + 1);
-
-      if (!moviesMap.has(movieId)) {
-        moviesMap.set(movieId, {
-          id: movieId,
-          title: item.title,
-          overview: '',
-          posterPath: item.poster_path,
-          backdropPath: null,
-          releaseDate: item.release_date,
-          voteAverage: item.vote_average,
-          voteCount: 0,
-          genreIds: item.genre_ids || [],
-          mediaType: item.media_type,
-          runtime: item.runtime,
-        });
-      }
+    const counts: Record<number, number> = {};
+    for (const row of data || []) {
+      counts[row.movie_id] = row.favorite_count;
     }
+    return counts;
+  },
 
-    return Array.from(moviesMap.values()).map((movie) => ({
-      ...movie,
-      favoriteCount: countsMap.get(movie.id) || 1,
+  async getAllFavorites(): Promise<(Movie & { favoriteCount: number })[]> {
+    const { data, error } = await supabase.from('favorites_summary').select('*');
+
+    if (error) throw error;
+
+    return (data || []).map((item) => ({
+      id: item.movie_id,
+      title: item.title,
+      overview: '',
+      posterPath: item.poster_path,
+      backdropPath: null,
+      releaseDate: item.release_date,
+      voteAverage: item.vote_average,
+      voteCount: 0,
+      genreIds: item.genre_ids || [],
+      mediaType: item.media_type,
+      runtime: item.runtime,
+      favoriteCount: item.favorite_count,
     }));
   },
 

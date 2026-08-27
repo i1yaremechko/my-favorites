@@ -1,4 +1,4 @@
-import { TMDB_LOCALES, type Language } from '../types/language';
+import { TMDB_LOCALES, type Language } from '@/types/language';
 import type {
   Movie,
   Genre,
@@ -22,7 +22,7 @@ const mapMovieData = (item: any, typeOverride?: 'movie' | 'tv'): Movie => {
     title: item.title || item.name || '',
     originalTitle: item.original_title || item.original_name,
     overview: item.overview || '',
-    posterPath: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : null,
+    posterPath: item.poster_path ? `https://image.tmdb.org/t/p/w342${item.poster_path}` : null,
     backdropPath: item.backdrop_path
       ? `https://image.tmdb.org/t/p/original${item.backdrop_path}`
       : null,
@@ -63,7 +63,7 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Error loading data from TMDB server');
+      throw new Error('Помилка при завантаженні даних із сервера TMDB');
     }
 
     const data = await response.json();
@@ -96,7 +96,7 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to load details');
+      throw new Error('Не вдалося завантажити деталі');
     }
 
     const data = await response.json();
@@ -112,7 +112,7 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to load genres');
+      throw new Error('Не вдалося завантажити жанри');
     }
 
     const data = await response.json();
@@ -130,7 +130,7 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to load viewing information.');
+      throw new Error('Не вдалося завантажити інформацію про перегляд');
     }
 
     const data = await response.json();
@@ -138,13 +138,10 @@ export const tmdbApi = {
 
     if (import.meta.env.DEV) {
       console.warn(
-        `[watch-providers] ${mediaType}/${id} — доступні регіони:`,
+        `[watch-providers] ${mediaType}/${id} — available regions:`,
         Object.keys(data.results ?? {})
       );
-      console.warn(
-        `[watch-providers] ${mediaType}/${id} — дані для UA:`,
-        regionData ?? '(відсутні)'
-      );
+      console.warn(`[watch-providers] ${mediaType}/${id} — UA data:`, regionData ?? '(none)');
     }
 
     if (!regionData) {

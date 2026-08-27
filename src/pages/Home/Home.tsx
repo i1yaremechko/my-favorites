@@ -7,7 +7,6 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { supabaseService } from '@/services/supabaseClient';
 import { tmdbApi } from '@/services/tmdbApi';
 import type { Movie, MediaType, MovieFilterParams } from '@/types/movie';
-import { localizeMovies } from '@/utils/localizeMovies';
 
 import styles from './Home.module.scss';
 
@@ -65,8 +64,6 @@ export const Home: React.FC<HomeProps> = ({
           });
         }
 
-        fetchedMovies = await localizeMovies(fetchedMovies, language);
-
         if (searchQuery.trim()) {
           const query = searchQuery.toLowerCase();
           fetchedMovies = fetchedMovies.filter((m) => m.title.toLowerCase().includes(query));
@@ -93,11 +90,18 @@ export const Home: React.FC<HomeProps> = ({
         };
 
         const data = await tmdbApi.getMovies(params);
-        setMovies(data.movies);
+
+        const counts = await supabaseService.getFavoriteCounts(data.movies.map((m) => m.id));
+        const moviesWithCounts = data.movies.map((m) => ({
+          ...m,
+          favoriteCount: counts[m.id] ?? 0,
+        }));
+
+        setMovies(moviesWithCounts);
         setTotalPages(data.totalPages);
       }
     } catch (error) {
-      console.error('Error loading movies:', error);
+      console.error('Failed to load movies:', error);
     } finally {
       setIsLoading(false);
     }
@@ -136,6 +140,7 @@ export const Home: React.FC<HomeProps> = ({
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       />
+
     </div>
   );
 };

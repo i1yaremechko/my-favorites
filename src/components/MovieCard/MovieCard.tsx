@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 
 import { useLanguage } from '@/hooks/useLanguage';
-import { supabaseService } from '@/services/supabaseClient';
 import type { Movie } from '@/types/movie';
 
 import styles from './MovieCard.module.scss';
@@ -20,30 +19,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   onSelectMovie,
 }) => {
   const { t } = useLanguage();
-  const [favoriteCount, setFavoriteCount] = useState<number>(movie.favoriteCount ?? 0);
-
-  useEffect(() => {
-    if (movie.favoriteCount !== undefined) {
-      setFavoriteCount(movie.favoriteCount);
-      return;
-    }
-
-    let isMounted = true;
-    supabaseService
-      .getFavoriteCount(movie.id)
-      .then((count) => {
-        if (isMounted) {
-          setFavoriteCount(count);
-        }
-      })
-      .catch((err) => {
-        console.error('Error fetching favorite count:', err);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [movie.id, movie.favoriteCount]);
+  const favoriteCount = movie.favoriteCount ?? 0;
 
   const releaseYear = movie.releaseDate ? movie.releaseDate.split('-')[0] : 'N/A';
 
