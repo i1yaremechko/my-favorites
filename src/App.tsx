@@ -15,9 +15,11 @@ import { signInWithTelegram } from './services/telegramAuth';
 import { tmdbApi } from './services/tmdbApi';
 import type { Movie } from './types/movie';
 import type { Tab } from './types/tab';
+import { localizeMovies } from './utils/localizeMovies';
 import { getTelegramWebApp, isTelegramMiniApp } from './utils/telegram';
 import './styles/global.scss';
 
+// Route-level code splitting
 const Home = lazy(() => import('./pages/Home/Home').then((m) => ({ default: m.Home })));
 const Favorites = lazy(() =>
   import('./pages/Favorites/Favorites').then((m) => ({ default: m.Favorites }))
@@ -63,11 +65,14 @@ export function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [telegramAuthError, setTelegramAuthError] = useState<string | null>(null);
 
-  const activeTab: Tab = location.pathname === '/favorites' ? 'favorites' : 'home';
+  // Визначаємо активну вкладку на основі поточного шляху роутера
+  const activeTab: Tab = location.pathname === '/favorites' ? 'favorites' : location.pathname === '/support' ? 'support' : 'home';
 
   const handleTabChange = (tab: Tab) => {
     if (tab === 'favorites') {
       navigate('/favorites');
+    } else if (tab === 'support') {
+      navigate('/support');
     } else {
       navigate('/');
     }
@@ -94,7 +99,7 @@ export function App() {
           setTelegramAuthError(null);
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
-          console.error('Telegram auto sign-in failed:', error);
+          console.error('Failed to automatically log in via Telegram:', error);
           setTelegramAuthError(message);
           getTelegramWebApp()?.showAlert(`Telegram auth error: ${message}`);
         }
@@ -122,14 +127,15 @@ export function App() {
     setIsFavoritesLoading(true);
     try {
       const data = await supabaseService.getFavorites(user.id);
-      setFavorites(data);
-      setFavoritesIds(data.map((m) => m.id));
+      const localized = await localizeMovies(data, language);
+      setFavorites(localized);
+      setFavoritesIds(localized.map((m) => m.id));
     } catch (error) {
-      console.error('Failed to load favorites:', error);
+      console.error('Error loading favorites:', error);
     } finally {
       setIsFavoritesLoading(false);
     }
-  }, [user]);
+  }, [user, language]);
 
   useEffect(() => {
     loadFavorites();
@@ -139,7 +145,7 @@ export function App() {
     try {
       await supabaseService.signInWithGoogle();
     } catch (error) {
-      console.error('Google sign-in failed:', error);
+      console.error('Error logging in:', error);
     }
   };
 
@@ -150,7 +156,7 @@ export function App() {
         setTelegramAuthError(null);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        console.error('Telegram sign-in retry failed:', error);
+        console.error('Failed to re-authorize via Telegram:', error);
         setTelegramAuthError(message);
         getTelegramWebApp()?.showAlert(`Telegram auth error: ${message}`);
       }
@@ -167,7 +173,7 @@ export function App() {
       setFavorites([]);
       setFavoritesIds([]);
     } catch (error) {
-      console.error('Sign-out failed:', error);
+      console.error('Logout error:', error);
     }
   };
 
@@ -191,7 +197,7 @@ export function App() {
         setFavorites((prev) => [...prev, movie]);
       }
     } catch (error) {
-      console.error('Failed to update favorites:', error);
+      console.error('Error updating favorites:', error);
     }
   };
 
@@ -252,7 +258,7 @@ export function App() {
         </Suspense>
       </main>
 
-      <Footer />
+      <Footer onSupportClick={() => navigate('/support')} />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={selectedMovie?.title}>
         {selectedMovie && (
@@ -282,15 +288,15 @@ export function App() {
               )}
             </div>
 
-            <ErrorBoundary fallbackLabel="Watch providers section failed to load">
+            <ErrorBoundary fallbackLabel="Where to watch section error">
               <WatchProviders movieId={selectedMovie.id} mediaType={selectedMovie.mediaType} />
             </ErrorBoundary>
 
-            <ErrorBoundary fallbackLabel="Platform search links failed to load">
+            <ErrorBoundary fallbackLabel="Platforms search section error">
               <PlatformSearchLinks title={selectedMovie.title} />
             </ErrorBoundary>
 
-            <ErrorBoundary fallbackLabel="Comments section failed to load">
+            <ErrorBoundary fallbackLabel="Comment section error">
               <Comments
                 movieId={selectedMovie.id}
                 mediaType={selectedMovie.mediaType}
