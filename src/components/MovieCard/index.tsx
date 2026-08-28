@@ -1,9 +1,8 @@
-import React from 'react';
-
 import { useLanguage } from '@/hooks/useLanguage';
 import type { Movie } from '@/types/movie';
+import { formatRuntime, getReleaseYear } from './utils';
 
-import styles from './MovieCard.module.scss';
+import styles from './index.module.scss';
 
 interface MovieCardProps {
   movie: Movie;
@@ -21,16 +20,8 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   const { t } = useLanguage();
   const favoriteCount = movie.favoriteCount ?? 0;
 
-  const releaseYear = movie.releaseDate ? movie.releaseDate.split('-')[0] : 'N/A';
-
-  const formatRuntime = (minutes?: number | null) => {
-    if (!minutes) return null;
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return hours > 0
-      ? `${hours}${t('hoursShort')} ${mins}${t('minutesShort')}`
-      : `${mins}${t('minutesShort')}`;
-  };
+  const releaseYear = getReleaseYear(movie.releaseDate);
+  const formattedRuntime = formatRuntime(movie.runtime, t('hoursShort'), t('minutesShort'));
 
   return (
     <div
@@ -79,7 +70,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
         <div className={styles.detailsRow}>
           <span className={styles.year}>{releaseYear}</span>
-          {movie.runtime && <span className={styles.runtime}>{formatRuntime(movie.runtime)}</span>}
+          {formattedRuntime && <span className={styles.runtime}>{formattedRuntime}</span>}
         </div>
       </div>
     </div>

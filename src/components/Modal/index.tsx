@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { useLanguage } from '@/hooks/useLanguage';
 
-import styles from './Modal.module.scss';
+import styles from './index.module.scss';
 
 interface ModalProps {
   isOpen: boolean;
@@ -13,6 +13,7 @@ interface ModalProps {
 
 export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   const { t } = useLanguage();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {

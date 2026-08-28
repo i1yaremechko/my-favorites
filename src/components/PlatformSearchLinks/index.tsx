@@ -1,9 +1,7 @@
-import React from 'react';
-
-import { UKRAINIAN_PLATFORMS, getPlatformFaviconUrl } from '@/config/externalPlatforms';
+import { UKRAINIAN_PLATFORMS, getPlatformFaviconUrl } from '@/pages/Support/config/externalPlatforms';
 import { useLanguage } from '@/hooks/useLanguage';
 
-import styles from './PlatformSearchLinks.module.scss';
+import styles from './index.module.scss';
 
 interface PlatformSearchLinksProps {
   title: string;

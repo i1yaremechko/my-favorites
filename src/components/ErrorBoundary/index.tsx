@@ -1,13 +1,8 @@
 import React from 'react';
 
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
-  fallbackLabel: string;
-}
+import type { ErrorBoundaryProps, ErrorBoundaryState } from './types';
 
-interface ErrorBoundaryState {
-  error: Error | null;
-}
+import styles from './index.module.scss';
 
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { error: null };
@@ -23,7 +18,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   render() {
     if (this.state.error) {
       return (
-        <p style={{ color: '#ff5722', fontSize: '13px', margin: 0 }}>
+        <p className={styles.errorBoundaryMessage}>
           {this.props.fallbackLabel}: {this.state.error.message}
         </p>
       );

@@ -1,0 +1,40 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.backdropImage {
+  width: 100%;
+  border-radius: 8px;
+  max-height: 250px;
+  object-fit: cover;
+}
+
+.overviewText {
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.metaInfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #888;
+}

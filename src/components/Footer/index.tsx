@@ -1,6 +1,6 @@
 import { useLanguage } from '@/hooks/useLanguage';
 
-import styles from './Footer.module.scss';
+import styles from './index.module.scss';
 
 interface FooterProps {
   onSupportClick?: () => void;

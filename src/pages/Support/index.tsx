@@ -1,43 +1,15 @@
-import { useState } from 'react';
-
-import { SUPPORT_LINKS } from '@/config/supportLinks';
+import { SUPPORT_LINKS } from '@/pages/Support/config/supportLinks';
 import { useLanguage } from '@/hooks/useLanguage';
-import { supabaseService } from '@/services/supabaseClient';
 
-import styles from './Support.module.scss';
+import { useSupportForm } from './hooks/useSupportForm';
+import type { SupportProps } from './types';
 
-interface SupportProps {
-  currentUser: { id: string; email?: string } | null;
-}
-
-type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
+import styles from './index.module.scss';
 
 export const Support: React.FC<SupportProps> = ({ currentUser }) => {
   const { t } = useLanguage();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState(currentUser?.email ?? '');
-  const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<SubmitStatus>('idle');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim()) return;
-
-    setStatus('submitting');
-    try {
-      await supabaseService.submitFeedback({
-        userId: currentUser?.id ?? null,
-        name,
-        email,
-        message,
-      });
-      setStatus('success');
-      setMessage('');
-    } catch (err) {
-      console.error('Failed to send message:', err);
-      setStatus('error');
-    }
-  };
+  const { name, setName, email, setEmail, message, setMessage, status, handleSubmit } =
+    useSupportForm({ currentUser });
 
   return (
     <div className={styles.supportPage}>

@@ -1,25 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-
 import { useLanguage } from '@/hooks/useLanguage';
-import { tmdbApi } from '@/services/tmdbApi';
-import type { Genre, MediaType } from '@/types/movie';
 
-import styles from './Filters.module.scss';
+import { useFiltersData } from './hooks/useFiltersData';
+import type { FiltersProps } from './types';
 
-export type ViewMode = 'catalog' | 'discover';
-
-interface FiltersProps {
-  mediaType: MediaType;
-  onMediaTypeChange: (type: MediaType) => void;
-  selectedGenreId?: number;
-  onGenreChange: (genreId?: number) => void;
-  selectedYear?: number;
-  onYearChange: (year?: number) => void;
-  viewMode?: ViewMode;
-  onViewModeChange?: (mode: ViewMode) => void;
-}
-
-const MIN_YEAR = 1900;
+import styles from './index.module.scss';
 
 export const Filters: React.FC<FiltersProps> = ({
   mediaType,
@@ -31,20 +15,8 @@ export const Filters: React.FC<FiltersProps> = ({
   viewMode,
   onViewModeChange,
 }) => {
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const { language, t } = useLanguage();
-
-  const years = useMemo(() => {
-    const currentYear = new Date().getFullYear();
-    return Array.from({ length: currentYear - MIN_YEAR + 1 }, (_, i) => currentYear - i);
-  }, []);
-
-  useEffect(() => {
-    tmdbApi
-      .getGenres(mediaType, language)
-      .then((data) => setGenres(data))
-      .catch((err) => console.error('Could not load genres:', err));
-  }, [mediaType, language]);
+  const { t } = useLanguage();
+  const { genres, years } = useFiltersData(mediaType);
 
   return (
     <div className={styles.filtersContainer}>

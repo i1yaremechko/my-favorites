@@ -1,8 +1,9 @@
 import { useLanguage } from '@/hooks/useLanguage';
-import type { Movie } from '@/types/movie';
-import { MovieCard } from '../MovieCard/MovieCard';
+import { MovieCard } from '../MovieCard';
 
-import styles from './MovieGrid.module.scss';
+import type { Movie } from '@/types/movie';
+
+import styles from './index.module.scss';
 
 interface MovieGridProps {
   movies: Movie[];
@@ -23,16 +24,16 @@ export const MovieGrid: React.FC<MovieGridProps> = ({
 
   if (isLoading) {
     return (
-      <div className={styles.messageContainer}>
-        <p className={styles.message}>{t('loadingContent')}</p>
+      <div className="messageContainer">
+        <p className="message">{t('loadingContent')}</p>
       </div>
     );
   }
 
   if (!movies.length) {
     return (
-      <div className={styles.messageContainer}>
-        <p className={styles.message}>{t('nothingFound')}</p>
+      <div className="messageContainer">
+        <p className="message">{t('nothingFound')}</p>
       </div>
     );
   }

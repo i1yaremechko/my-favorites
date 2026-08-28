@@ -1,37 +1,16 @@
 import { useEffect, useState } from 'react';
 
+import { ProviderRow } from '@/components/ProviderRow';
 import { useLanguage } from '@/hooks/useLanguage';
 import { tmdbApi } from '@/services/tmdbApi';
-import type { MediaType, WatchProvider, WatchProvidersResult } from '@/types/movie';
+import type { MediaType, WatchProvidersResult } from '@/types/movie';
 
-import styles from './WatchProviders.module.scss';
+import styles from './index.module.scss';
 
 interface WatchProvidersProps {
   movieId: number;
   mediaType: MediaType;
 }
-
-interface ProviderRowProps {
-  providers: WatchProvider[];
-  attributionLink: string | null;
-}
-
-const ProviderRow: React.FC<ProviderRowProps> = ({ providers, attributionLink }) => (
-  <div className={styles.logosRow}>
-    {providers.map((provider) => (
-      <a
-        key={provider.providerId}
-        href={attributionLink ?? undefined}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.providerLink}
-        title={provider.providerName}
-      >
-        <img src={provider.logoUrl} alt={provider.providerName} className={styles.logo} />
-      </a>
-    ))}
-  </div>
-);
 
 export const WatchProviders: React.FC<WatchProvidersProps> = ({ movieId, mediaType }) => {
   const { t } = useLanguage();

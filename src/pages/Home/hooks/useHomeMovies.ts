@@ -1,31 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { Filters, type ViewMode } from '@/components/Filters/Filters';
-import { MovieGrid } from '@/components/MovieGrid/MovieGrid';
-import { Pagination } from '@/components/Pagination/Pagination';
-import { useLanguage } from '@/hooks/useLanguage';
+import type { ViewMode } from '@/components/Filters/types';
 import { supabaseService } from '@/services/supabaseClient';
 import { tmdbApi } from '@/services/tmdbApi';
-import type { Movie, MediaType, MovieFilterParams } from '@/types/movie';
+import type { MediaType, Movie, MovieFilterParams } from '@/types/movie';
 
-import styles from './Home.module.scss';
-
-interface HomeProps {
+interface UseHomeMoviesParams {
   searchQuery: string;
-  favoritesIds: number[];
-  onToggleFavorite: (movie: Movie) => void;
-  onSelectMovie: (movie: Movie) => void;
+  language: string;
 }
 
 const ITEMS_PER_PAGE = 20;
 
-export const Home: React.FC<HomeProps> = ({
-  searchQuery,
-  favoritesIds,
-  onToggleFavorite,
-  onSelectMovie,
-}) => {
-  const { language } = useLanguage();
+export const useHomeMovies = ({ searchQuery, language }: UseHomeMoviesParams) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [mediaType, setMediaType] = useState<MediaType>('movie');
@@ -86,7 +73,7 @@ export const Home: React.FC<HomeProps> = ({
           year: selectedYear,
           sortBy: 'popularity.desc',
           query: searchQuery.trim() || undefined,
-          language,
+          language: language as MovieFilterParams['language'],
         };
 
         const data = await tmdbApi.getMovies(params);
@@ -111,36 +98,19 @@ export const Home: React.FC<HomeProps> = ({
     loadMovies();
   }, [loadMovies]);
 
-  return (
-    <div className={styles.homePage}>
-      <Filters
-        mediaType={mediaType}
-        onMediaTypeChange={handleMediaTypeChange}
-        selectedGenreId={selectedGenreId}
-        onGenreChange={setSelectedGenreId}
-        selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-      />
-
-      <MovieGrid
-        movies={movies}
-        favoritesIds={favoritesIds}
-        onToggleFavorite={onToggleFavorite}
-        onSelectMovie={onSelectMovie}
-        isLoading={isLoading}
-      />
-
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={(newPage) => {
-          setPage(newPage);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-      />
-
-    </div>
-  );
+  return {
+    movies,
+    isLoading,
+    mediaType,
+    handleMediaTypeChange,
+    selectedGenreId,
+    setSelectedGenreId,
+    selectedYear,
+    setSelectedYear,
+    viewMode,
+    setViewMode,
+    page,
+    setPage,
+    totalPages,
+  };
 };

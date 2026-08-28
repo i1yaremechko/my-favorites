@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { useLanguage } from '@/hooks/useLanguage';
 import { LANGUAGE_LABELS, LANGUAGES } from '@/types/language';
-import type { Tab } from '@/types/tab';
 import { isTelegramMiniApp } from '@/utils/telegram';
+import type { Tab } from '@/types/tab';
 
-import styles from './Header.module.scss';
+import styles from './index.module.scss';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
