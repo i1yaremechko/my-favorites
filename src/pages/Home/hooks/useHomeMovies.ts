@@ -4,6 +4,7 @@ import type { ViewMode } from '@/components/Filters/types';
 import { supabaseService } from '@/services/supabaseClient';
 import { tmdbApi } from '@/services/tmdbApi';
 import type { MediaType, Movie, MovieFilterParams } from '@/types/movie';
+import { localizeMovies } from '@/utils/localizeMovies';
 
 interface UseHomeMoviesParams {
   searchQuery: string;
@@ -64,7 +65,13 @@ export const useHomeMovies = ({ searchQuery, language }: UseHomeMoviesParams) =>
         const startIndex = (page - 1) * ITEMS_PER_PAGE;
         const paginatedMovies = fetchedMovies.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-        setMovies(paginatedMovies);
+        // Динамічно локалізуємо назви та опис під обрану мову
+        const localizedMovies = await localizeMovies(
+          paginatedMovies,
+          language as MovieFilterParams['language']
+        );
+
+        setMovies(localizedMovies);
       } else {
         const params: MovieFilterParams = {
           page,

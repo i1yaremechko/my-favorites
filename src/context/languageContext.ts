@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 
-import type { TranslationKey } from '../i18n/translations';
-import type { Language } from '../types/language';
+import type { TranslationKey } from '@/i18n/translations';
+import type { Language } from '@/types/language';
 
 export interface LanguageContextValue {
   language: Language;
