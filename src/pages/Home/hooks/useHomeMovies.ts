@@ -64,8 +64,6 @@ export const useHomeMovies = ({ searchQuery, language }: UseHomeMoviesParams) =>
 
         const startIndex = (page - 1) * ITEMS_PER_PAGE;
         const paginatedMovies = fetchedMovies.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-        // Динамічно локалізуємо назви та опис під обрану мову
         const localizedMovies = await localizeMovies(
           paginatedMovies,
           language as MovieFilterParams['language']
