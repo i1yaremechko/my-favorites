@@ -174,4 +174,54 @@ export const tmdbApi = {
 
     return { paidProviders, freeProviders, attributionLink: regionData.link ?? null };
   },
+
+  async getMovieTrailer(
+    id: number,
+    mediaType: MediaType = 'movie',
+    language: Language = 'uk'
+  ): Promise<string | null> {
+    const locale = TMDB_LOCALES[language] || 'uk-UA';
+
+    // Допоміжна функція для запиту відео з певною локаллю
+    const fetchVideos = async (lang: string) => {
+      const response = await fetch(`${BASE_URL}/${mediaType}/${id}/videos?language=${lang}`, {
+        headers,
+      });
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data.results || [];
+    };
+
+    try {
+      let results: any[] = [];
+
+      // Якщо поточна мова UA, пробуємо спочатку знайти український трейлер
+      if (language === 'uk') {
+        results = await fetchVideos(locale);
+      }
+
+      // Шукаємо офіційний трейлер серед отриманих результатів
+      let trailer = results.find(
+        (v: any) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
+      );
+
+      // Якщо для UA нічого не знайшлося або мова інша, робимо запит на 'en-US' (або загальний) як фолбек
+      if (!trailer) {
+        const fallbackResults = await fetchVideos('en-US');
+        trailer = fallbackResults.find(
+          (v: any) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
+        );
+
+        // Якщо навіть типу Trailer немає, беремо будь-яке перше доступне YouTube відео для цього фільму
+        if (!trailer && fallbackResults.length > 0) {
+          trailer = fallbackResults.find((v: any) => v.site === 'YouTube');
+        }
+      }
+
+      return trailer?.key || null;
+    } catch (error) {
+      console.error('Не вдалося завантажити трейлер:', error);
+      return null;
+    }
+  },
 };
