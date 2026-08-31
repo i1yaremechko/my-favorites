@@ -39,10 +39,10 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         setTrailerKey(key);
         setIsTrailerOpen(true);
       } else {
-        alert('На жаль, для цього фільму/серіалу трейлер не знайдено.');
+        alert(t('trailerNotFoundAlert'));
       }
     } catch (error) {
-      console.error('Помилка при завантаженні трейлера:', error);
+      console.error('Error occurred while loading the trailer:', error);
     } finally {
       setIsLoadingTrailer(false);
     }
@@ -117,7 +117,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
               transition: 'background 0.2s',
             }}
           >
-            {isLoadingTrailer ? 'Завантаження...' : '🎬 Дивитися трейлер'}
+            {isLoadingTrailer ? t('loadingTrailer') : t('watchTrailer')}
           </button>
         </div>
       </div>

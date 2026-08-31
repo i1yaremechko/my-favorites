@@ -56,6 +56,15 @@ export const translations = {
     en: 'Please sign in to add movies to your favorites.',
   },
 
+  // Trailer
+  watchTrailer: { uk: '🎬 Дивитися трейлер', en: '🎬 Watch Trailer' },
+  loadingTrailer: { uk: 'Завантаження...', en: 'Loading...' },
+  trailerNotFoundAlert: {
+    uk: 'На жаль, для цього фільму/серіалу трейлер не знайдено.',
+    en: 'Unfortunately, no trailer was found for this movie/series.',
+  },
+  trailerModalTitle: { uk: 'Трейлер', en: 'Trailer' },
+
   // Watch providers (платно / безкоштовно)
   watchPaidTitle: { uk: 'Де подивитися платно', en: 'Where to watch (paid)' },
   watchFreeTitle: { uk: 'Де подивитися безплатно', en: 'Where to watch (free)' },

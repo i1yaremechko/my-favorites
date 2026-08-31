@@ -36,7 +36,7 @@ export const TrailerModal: React.FC<TrailerModalProps> = ({ isOpen, onClose, vid
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h3 className={styles.title}>Трейлер</h3>
+          <h3 className={styles.title}>{t('trailerModalTitle')}</h3>
           <button
             type="button"
             className={styles.closeBtn}
