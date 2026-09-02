@@ -26,13 +26,6 @@ export const UKRAINIAN_PLATFORMS: ExternalPlatform[] = [
     buildSearchUrl: (query) =>
       `https://megogo.net/ua/search-extended?q=${encodeURIComponent(query)}`,
   },
-  // {
-  //   id: 'uafix',
-  //   name: 'UAФЛІКС',
-  //   domain: 'uafix.net',
-  //   buildSearchUrl: (query) =>
-  //     `https://uafix.net/index.php?do=search&subaction=search&story=${encodeURIComponent(query)}`,
-  // },
 ];
 
 export function getPlatformFaviconUrl(domain: string): string {

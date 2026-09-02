@@ -63,7 +63,7 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Помилка при завантаженні даних із сервера TMDB');
+      throw new Error('Error loading data from TMDB server');
     }
 
     const data = await response.json();
@@ -96,7 +96,7 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Не вдалося завантажити деталі');
+      throw new Error('Error loading details from TMDB server');
     }
 
     const data = await response.json();
@@ -112,7 +112,7 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Не вдалося завантажити жанри');
+      throw new Error('Error loading genres from TMDB server');
     }
 
     const data = await response.json();
@@ -130,7 +130,7 @@ export const tmdbApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Не вдалося завантажити інформацію про перегляд');
+      throw new Error('Error loading watch providers information');
     }
 
     const data = await response.json();
